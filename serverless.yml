@@ -27,6 +27,9 @@ provider:
 functions:
   receiver:
     handler: src/receiver.handler
+    events:
+      - sqs: "${ssm:queue-notificacao-hackathon}"
+      
 
 
   
