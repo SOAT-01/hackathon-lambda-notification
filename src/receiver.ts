@@ -5,11 +5,11 @@ import { assertArgumentIsValidEmail } from "@/utils/assertionConcern";
 const sendEmail = async (event: SQSEvent) => {
   for (const record of event.Records) {
     try {
-      const { email, data } = JSON.parse(record.body || "{}");
+      const { usuarioEmail, pontos } = JSON.parse(record.body || "{}");
 
       const emailUseCase = new EmailUseCase();
 
-      const isValidEmail = assertArgumentIsValidEmail(email);
+      const isValidEmail = assertArgumentIsValidEmail(usuarioEmail);
 
       if (!isValidEmail) {
         console.error(
@@ -18,12 +18,12 @@ const sendEmail = async (event: SQSEvent) => {
         throw new Error("Incorrect e-mail format, ex: email@email.com");
       }
 
-      if (!data || data.length === 0) {
+      if (!pontos || pontos.length === 0) {
         console.error("Skipping message: No data to process");
         throw new Error("No data to process");
       }
 
-      await emailUseCase.sendEmail(email, data);
+      await emailUseCase.sendEmail(usuarioEmail, pontos);
     } catch (error) {
       console.error("Error processing messages:", error);
       throw error;
