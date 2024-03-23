@@ -1,0 +1,35 @@
+service: hackathon-lambda-notification
+
+frameworkVersion: "3"
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    target: node20
+  enterprise:
+    collectLambdaLogs: false
+  stages:
+    - dev
+    - prod
+
+plugins:
+  - serverless-esbuild
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  memorySize: 256 
+  timeout: 30
+  stage: ${opt:stage, 'dev'}
+  environment: ${file(serverless/environment.yml)}
+   
+functions:
+  receiver:
+    handler: src/receiver.handler
+    events:
+      - sqs: "${ssm:queue-notificacao-hackathon}"
+      
+
+
+  
